@@ -2,4 +2,6 @@
     <string name="app_name">Quoc Tran\'s Android Labs</string>
     <string name="hello_message">Hello world!</string>
     <string name="button_message">I\'m a button</string>
+    <string name="editmessage">I\'m an EditText Message</string>
+    <string name="hinttext">Write something here</string>
 </resources>
