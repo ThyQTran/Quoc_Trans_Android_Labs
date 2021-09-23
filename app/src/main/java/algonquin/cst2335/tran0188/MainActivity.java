@@ -65,9 +65,11 @@ public class MainActivity extends AppCompatActivity {
         ImageView myimage = findViewById(R.id.logo_algonquin);
 
         ImageButton imgbtn = findViewById(R.id.myimagebutton);
-        imgbtn.setOnClickListener(btn -> {
+        imgbtn.setOnClickListener(vm -> {
             int width = imgbtn.getWidth();
             int height = imgbtn.getHeight();
+
+            Toast.makeText(MainActivity.this, "The width = " + width + " and height = " + height, Toast.LENGTH_LONG).show();
         });
     }
 
