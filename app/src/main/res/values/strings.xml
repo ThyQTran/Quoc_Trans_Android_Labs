@@ -2,6 +2,9 @@
     <string name="app_name">Quoc Tran\'s Android Labs</string>
     <string name="hello_message">Hello world!</string>
     <string name="button_message">I\'m a button</string>
-    <string name="editmessage">I\'m an EditText Message</string>
-    <string name="hinttext">Write something here</string>
+    <string name="editmessage" translatable="false">I\'m an EditText Message</string>
+    <string name="hinttext" translatable="false">Write something here</string>
+    <string name="checkbox_message" translatable="false">Do you like Android?</string>
+    <string name="switch_message" translatable="false">Do you want the lights on?</string>
+    <string name="radio_message" translatable="false">Do you agree?</string>
 </resources>

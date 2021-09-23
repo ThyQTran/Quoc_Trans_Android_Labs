@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:orientation="vertical">
+
 
     <TextView
         android:id="@+id/textview"
@@ -26,8 +26,40 @@
         android:id="@+id/myedittext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/editmessage"
         android:hint="@string/hinttext"
+        android:text="@string/editmessage" />
+
+    <CheckBox
+        android:id="@+id/mycheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/checkbox_message"
         />
 
+    <Switch
+        android:id="@+id/myswitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/switch_message" />
+
+    <RadioButton
+        android:id="@+id/myradio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/radio_message"
+        />
+
+    <ImageView
+        android:id="@+id/logo_algonquin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/logo_algonquin"
+        />
+
+    <ImageButton
+        android:id="@+id/myimagebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo_algonquin"
+        />
 </LinearLayout>
