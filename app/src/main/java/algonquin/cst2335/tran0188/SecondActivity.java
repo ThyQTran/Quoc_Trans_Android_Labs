@@ -31,6 +31,7 @@ public class SecondActivity extends AppCompatActivity {
 
     EditText numberInput;
     String dialNumber;
+    ImageView currentImage;
 
     @Override
     protected void onPause() {
@@ -39,10 +40,10 @@ public class SecondActivity extends AppCompatActivity {
         Log.w( "SecondActivity", "onPause() - The application no longer responds to user input" );
         SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
 
-        String phoneNumber = prefs.getString("PhoneNumber", null);
+        //String phoneNumber = prefs.getString("PhoneNumber", "");
 
-        numberInput = findViewById(R.id.editTextPhone);
-        numberInput.setText(phoneNumber);
+        //numberInput = findViewById(R.id.editTextPhone);
+        //numberInput.setText(phoneNumber);
 
         SharedPreferences.Editor editor = prefs.edit();
 
@@ -51,7 +52,7 @@ public class SecondActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    ImageView currentImage;
+
 
     ActivityResultLauncher<Intent> cameraResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -94,11 +95,14 @@ public class SecondActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-
         setContentView(R.layout.activity_second);
+
+        SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+
+        String phoneNumber = prefs.getString("PhoneNumber", "");
+
+        numberInput = findViewById(R.id.editTextPhone);
+        numberInput.setText(phoneNumber);
 
         Intent fromPrevious = getIntent();
         String emailAddress = fromPrevious.getStringExtra("EmailAddress");

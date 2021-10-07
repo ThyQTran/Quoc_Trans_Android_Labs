@@ -23,6 +23,7 @@
         android:layout_height="42dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="101dp"
+        android:text=""
         android:ems="10"
         android:inputType="phone"
         app:layout_constraintStart_toStartOf="parent"
