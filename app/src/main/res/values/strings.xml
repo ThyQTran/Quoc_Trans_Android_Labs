@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">Quoc Tran\'s Android Labs</string>
-    <string name="hello_message">Hello world!</string>
-    <string name="button_message">I\'m a button</string>
+    <string name="enter_email_message">Enter your email address:</string>
+    <string name="hint_message">Type email here</string>
+    <string name="type_password_message">Type your password:</string>
+    <string name="button_message">LOGIN</string>
+
+    <string name="secondActivity_textview">TextView</string>
+    <string name="secondActivity_callButton">CALL NUMBER</string>
+    <string name="secondActivity_changePicture">CHANGE PICTURE</string>
 </resources>
