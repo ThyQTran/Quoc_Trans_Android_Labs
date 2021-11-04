@@ -36,6 +36,9 @@ public class MainActivityTest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+    /**
+     * JUnit test to confirm that password submitted is invalid
+     */
     @Test
     public void mainActivityTest() {
 
@@ -53,6 +56,9 @@ public class MainActivityTest {
 
     }
 
+    /**
+     * JUnit test to confirm that password submitted without an uppercase character is invalid
+     */
     @Test
     public void testFindMissingUpperCase(){
 
@@ -69,6 +75,9 @@ public class MainActivityTest {
         textView.check(matches(withText("You shall not pass!")));
     }
 
+    /**
+     * JUnit test to confirm that password submitted without a lowercase character is invalid
+     */
     @Test
     public void testFindMissingLowerCase(){
 
@@ -85,6 +94,9 @@ public class MainActivityTest {
         textView.check(matches(withText("You shall not pass!")));
     }
 
+    /**
+     * JUnit test to confirm that password submitted without a number character is invalid
+     */
     @Test
     public void testFindMissingDigit(){
 
@@ -101,6 +113,9 @@ public class MainActivityTest {
         textView.check(matches(withText("You shall not pass!")));
     }
 
+    /**
+     * JUnit test to confirm that password submitted without a special character (#$%^&*!@?) is invalid
+     */
     @Test
     public void testFindMissingSpecialCharacter(){
 
@@ -117,6 +132,10 @@ public class MainActivityTest {
         textView.check(matches(withText("You shall not pass!")));
     }
 
+    /**
+     * JUnit test to confirm that password submitted with an uppercase character, a lowercase
+     * character, a number character and a special character (#$%^&*!@?) is valid
+     */
     @Test
     public void testFindValidPassword(){
 
