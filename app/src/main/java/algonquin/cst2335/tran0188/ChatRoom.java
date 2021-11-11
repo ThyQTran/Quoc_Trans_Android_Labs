@@ -45,6 +45,8 @@ public class ChatRoom extends AppCompatActivity {
 
         RecyclerView chatList = findViewById(R.id.myrecycler);
 
+        MyOpenHelper opener = new MyOpenHelper();
+
         sendButton.setOnClickListener(click -> {
 
             String whatIsTyped = edit.getText().toString();
