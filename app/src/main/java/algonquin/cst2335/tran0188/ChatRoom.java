@@ -33,7 +33,7 @@ public class ChatRoom extends AppCompatActivity {
 
     ArrayList<ChatMessage> messages = new ArrayList<>();
     MyChatAdapter adt = new MyChatAdapter();
-
+    SQLiteDatabase db;
 
     @Override
     public void onCreate(Bundle previousInstance) {
@@ -49,7 +49,7 @@ public class ChatRoom extends AppCompatActivity {
         RecyclerView chatList = findViewById(R.id.myrecycler);
 
         MyOpenHelper opener = new MyOpenHelper(this);
-        SQLiteDatabase db = opener.getWritableDatabase();
+        db = opener.getWritableDatabase();
 
         //loads messages from database
         Cursor results = db.rawQuery("Select * from " + MyOpenHelper.TABLE_NAME + ";", null);
@@ -66,12 +66,7 @@ public class ChatRoom extends AppCompatActivity {
             int sendOrReceive = results.getInt(sendCol);
             messages.add(new ChatMessage(message, sendOrReceive, time, id));
         }
-//        results.moveToNext();
-//        long id = results.getInt(_idCol);
-//        String message = results.getString(messageCol);
-//        String time = results.getString(timeCol);
-//        int sendOrReceive = results.getInt(sendCol);
-//        messages.add(new ChatMessage(message, sendOrReceive, time, id));
+
 
         sendButton.setOnClickListener(click -> {
 
@@ -157,11 +152,19 @@ public class ChatRoom extends AppCompatActivity {
                                messages.remove(position);
                                adt.notifyItemRemoved(position);
 
+                               db.delete(MyOpenHelper.TABLE_NAME, "_id=?", new String[] { Long.toString(removedMessage.getId())});
+
                                Snackbar.make(messageText, "You deleted message #" + position, Snackbar.LENGTH_LONG)
                                        .setAction("Undo", clk -> {
 
                                            messages.add(position, removedMessage);
                                            adt.notifyItemInserted(position);
+
+                                           //Reinserting deleted item into database
+                                           db.execSQL("Insert into " + MyOpenHelper.TABLE_NAME + " values('" + removedMessage.getId() +
+                                                   "','" + removedMessage.getMessage() +
+                                                   "','" + removedMessage.getSendOrReceive() +
+                                                   "','" + removedMessage.getTimeSent() + "');");
                                        })
                                        .show();
                     })
@@ -257,8 +260,6 @@ public class ChatRoom extends AppCompatActivity {
                 return timeSent;
             }
         }
-
-
 }
 
 
