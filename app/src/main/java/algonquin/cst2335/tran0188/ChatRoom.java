@@ -1,6 +1,9 @@
 package algonquin.cst2335.tran0188;
 
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 
@@ -45,7 +48,30 @@ public class ChatRoom extends AppCompatActivity {
 
         RecyclerView chatList = findViewById(R.id.myrecycler);
 
-        MyOpenHelper opener = new MyOpenHelper();
+        MyOpenHelper opener = new MyOpenHelper(this);
+        SQLiteDatabase db = opener.getWritableDatabase();
+
+        //loads messages from database
+        Cursor results = db.rawQuery("Select * from " + MyOpenHelper.TABLE_NAME + ";", null);
+
+        int _idCol = results.getColumnIndex("_id");
+        int messageCol = results.getColumnIndex(MyOpenHelper.col_message);
+        int sendCol = results.getColumnIndex(MyOpenHelper.col_send_receive);
+        int timeCol = results.getColumnIndex(MyOpenHelper.col_time_sent);
+
+        while(results.moveToNext()){
+            long id = results.getInt(_idCol);
+            String message = results.getString(messageCol);
+            String time = results.getString(timeCol);
+            int sendOrReceive = results.getInt(sendCol);
+            messages.add(new ChatMessage(message, sendOrReceive, time, id));
+        }
+//        results.moveToNext();
+//        long id = results.getInt(_idCol);
+//        String message = results.getString(messageCol);
+//        String time = results.getString(timeCol);
+//        int sendOrReceive = results.getInt(sendCol);
+//        messages.add(new ChatMessage(message, sendOrReceive, time, id));
 
         sendButton.setOnClickListener(click -> {
 
@@ -59,13 +85,20 @@ public class ChatRoom extends AppCompatActivity {
 
             ChatMessage thisMessage = new ChatMessage(whatIsTyped, 1,currentDateAndTime);
 
+            ContentValues newRow = new ContentValues();
+            newRow.put(MyOpenHelper.col_message, thisMessage.getMessage());
+            newRow.put(MyOpenHelper.col_send_receive, thisMessage.getSendOrReceive());
+            newRow.put(MyOpenHelper.col_time_sent, thisMessage.getTimeSent());
+
+            long newId = db.insert(MyOpenHelper.TABLE_NAME, MyOpenHelper.col_message, newRow);
+
+            thisMessage.setId(newId);
+
             messages.add(thisMessage);
             edit.setText("");
 
             adt.notifyItemInserted(messages.size() - 1);
         });
-  //      chatList.setAdapter(adt);
-  //      chatList.setLayoutManager(new LinearLayoutManager(this));  //App crashes when this line is added and getItemCount() changes # (Mandatory though)
 
         receiveButton.setOnClickListener(click -> {
 
@@ -79,6 +112,15 @@ public class ChatRoom extends AppCompatActivity {
 
             ChatMessage thisMessage = new ChatMessage(whatIsTyped, 2, currentDateAndTime);
 
+            ContentValues newRow = new ContentValues();
+            newRow.put(MyOpenHelper.col_message, thisMessage.getMessage());
+            newRow.put(MyOpenHelper.col_send_receive, thisMessage.getSendOrReceive());
+            newRow.put(MyOpenHelper.col_time_sent, thisMessage.getTimeSent());
+
+            long newId = db.insert(MyOpenHelper.TABLE_NAME, MyOpenHelper.col_message, newRow);
+
+            thisMessage.setId(newId);
+
             messages.add(thisMessage);
             edit.setText("");
 
@@ -86,7 +128,7 @@ public class ChatRoom extends AppCompatActivity {
 
         });
         chatList.setAdapter(adt);
-        chatList.setLayoutManager(new LinearLayoutManager(this));  //App crashes when this line is added and getItemCount() changes # (Mandatory though)
+        chatList.setLayoutManager(new LinearLayoutManager(this));
     }
 
         public class MyRowViews extends RecyclerView.ViewHolder {
@@ -182,11 +224,22 @@ public class ChatRoom extends AppCompatActivity {
             String message;
             int sendOrReceive;
             String timeSent;
+            long id;
+
+            public void setId( long l) { id = l; }
+            public long getId(){ return id;}
 
             public ChatMessage(String message, int sendOrReceive, String timeSent) {
                 this.message = message;
                 this.sendOrReceive = sendOrReceive;
                 this.timeSent = timeSent;
+            }
+
+            public ChatMessage(String message, int sendOrReceive, String timeSent, long id){
+                this.message = message;
+                this.sendOrReceive = sendOrReceive;
+                this.timeSent = timeSent;
+                setId(id);
             }
 
             public String getMessage() {
