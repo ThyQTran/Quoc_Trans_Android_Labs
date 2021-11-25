@@ -131,21 +131,22 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    ImageView iv = findViewById(R.id.icon);
-                    iv.setImageBitmap(image);
+                    //ImageView iv = findViewById(R.id.icon);
+                    //iv.setImageBitmap(image);
 
 
+                    Bitmap finalImage = image;
                     runOnUiThread(() -> {
                         TextView tv = findViewById(R.id.temp);
                         tv.setText("The current temperature is " + current);
                         tv.setVisibility(View.VISIBLE);
 
                         tv = findViewById(R.id.minTemp);
-                        tv.setText("The min temperature is " + current);
+                        tv.setText("The min temperature is " + min);
                         tv.setVisibility(View.VISIBLE);
 
                         tv = findViewById(R.id.maxTemp);
-                        tv.setText("The max temperature is " + current);
+                        tv.setText("The max temperature is " + max);
                         tv.setVisibility(View.VISIBLE);
 
                         tv = findViewById(R.id.humidity);
@@ -156,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
                         tv.setText(description);
                         tv.setVisibility(View.VISIBLE);
 
- //                           ImageView iv = findViewById(R.id.icon);
- //                           iv.setImageBitmap(image);
+                        ImageView iv = findViewById(R.id.icon);
+                        iv.setImageBitmap(finalImage);
                         iv.setVisibility(View.VISIBLE);
                     });
 
