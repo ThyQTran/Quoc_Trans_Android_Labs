@@ -1,6 +1,7 @@
 package algonquin.cst2335.tran0188;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -14,12 +15,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -59,6 +64,14 @@ public class MainActivity extends AppCompatActivity {
 
     private String stringURL;
 
+    Bitmap image = null;
+    String description = null;
+    String iconName = null;
+    String current = null;
+    String min = null;
+    String max = null;
+    String humidity = null;
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,18 +91,54 @@ public class MainActivity extends AppCompatActivity {
 
         forecastBtn.setOnClickListener(clk ->{
 
+            String cityName = cityText.getText().toString();
+
+            AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Getting forecast")
+                    .setMessage("We're calling people in " + cityName + "to look outside their windows and tell us what's the weather like over there.")
+                    .setView(new ProgressBar(MainActivity.this))
+                    .show();
+
             Executor newThread = Executors.newSingleThreadExecutor();
 
             newThread.execute( () -> {
                 /* This runs in a separate thread */
                 try {
-                    String cityName = cityText.getText().toString();
 
-                    stringURL = "https://api.openweathermap.org/data/2.5/weather?q=" + URLEncoder.encode(cityName,"UTF-8") + "&appid=bdd1b06f072a3498fc5ca8d9a3e87c1d&units=metric";
+
+                    stringURL = "https://api.openweathermap.org/data/2.5/weather?q=" + URLEncoder.encode(cityName,"UTF-8") + "&appid=bdd1b06f072a3498fc5ca8d9a3e87c1d&units=metric&mode=xml";
 
                     URL url = new URL(stringURL); //Builds the server connection  as the URL passed here is the server you want to connect to
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection(); //Connects to the server
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream()); //Waits for a response from the server
+
+                    XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+                    factory.setNamespaceAware(false);
+                    XmlPullParser xpp = factory.newPullParser();
+                    xpp.setInput( in  , "UTF-8");
+
+
+
+                    while(xpp.next() != XmlPullParser.END_DOCUMENT){
+                        switch(xpp.getEventType()){
+                            case XmlPullParser.START_TAG:
+                                if(xpp.getName().equals("temperature")){
+                                     current = xpp.getAttributeValue(null, "value"); //Gets the current temperature
+                                     min = xpp.getAttributeValue(null,"min"); //Gets the min temperature
+                                     max = xpp.getAttributeValue(null, "max"); //Gets the max temperature
+                                }else if(xpp.getName().equals("weather")){
+                                     description = xpp.getAttributeValue(null, "value"); //Gets the weather description
+                                     iconName = xpp.getAttributeValue(null, "icon"); //Gets the icon name
+                                }else if(xpp.getName().equals("humidity")){
+                                     humidity = xpp.getAttributeValue(null, "value");
+                                }
+                                break;
+                            case XmlPullParser.END_TAG:
+                                break;
+                            case XmlPullParser.TEXT:
+                                break;
+                        }
+                    }
 
                     String text = (new BufferedReader( //Converts the inputStream from the server into Java String object to read JSON name/value pair data in Android
                             new InputStreamReader(in, StandardCharsets.UTF_8)))
@@ -98,22 +147,22 @@ public class MainActivity extends AppCompatActivity {
 
                     int i = 0; //Allows for the test variable to run fully and value of variable to display in debugging console
 
-                    JSONObject theDocument = new JSONObject(text);
+//                    JSONObject theDocument = new JSONObject(text);
 
-                    JSONArray weatherArray = theDocument.getJSONArray("weather");
-                    JSONObject position0 = weatherArray.getJSONObject(0);
-                    String description = position0.getString("description");
-                    String iconName = position0.getString("icon");
+//                   JSONArray weatherArray = theDocument.getJSONArray("weather");
+//                    JSONObject position0 = weatherArray.getJSONObject(0);
+//                     description = position0.getString("description");
+//                     iconName = position0.getString("icon");
 
-                    JSONObject mainObject = theDocument.getJSONObject( "main" );
+//                    JSONObject mainObject = theDocument.getJSONObject( "main" );
 
-                    double current = mainObject.getDouble("temp");
-                    double min = mainObject.getDouble("temp_min");
-                    double max = mainObject.getDouble("temp_max");
-                    int humidity = mainObject.getInt("humidity");
+//                    double current = mainObject.getDouble("temp");
+//                    double min = mainObject.getDouble("temp_min");
+//                    double max = mainObject.getDouble("temp_max");
+//                    int humidity = mainObject.getInt("humidity");
 
                     //Downloads URL picture and stores it as a bitmap
-                    Bitmap image = null;
+ // not new                  Bitmap image = null;
 
 
                     File file = new File(getFilesDir(), iconName + ".png");
@@ -127,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                         if (responseCode == 200) {
 
                             image = BitmapFactory.decodeStream(connection.getInputStream());
-                            image.compress(Bitmap.CompressFormat.PNG, 100, openFileOutput(iconName+".png", Activity.MODE_PRIVATE));
+  //                          image.compress(Bitmap.CompressFormat.PNG, 100, openFileOutput(iconName+".png", Activity.MODE_PRIVATE));
                         }
                     }
 
@@ -135,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                     //iv.setImageBitmap(image);
 
 
-                    Bitmap finalImage = image;
+
                     runOnUiThread(() -> {
                         TextView tv = findViewById(R.id.temp);
                         tv.setText("The current temperature is " + current);
@@ -158,8 +207,10 @@ public class MainActivity extends AppCompatActivity {
                         tv.setVisibility(View.VISIBLE);
 
                         ImageView iv = findViewById(R.id.icon);
-                        iv.setImageBitmap(finalImage);
+                        iv.setImageBitmap(image);
                         iv.setVisibility(View.VISIBLE);
+
+                        dialog.hide();
                     });
 
 
@@ -179,7 +230,9 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } catch (IOException ioe) {
                     Log.e("Connection error: ", ioe.getMessage());
-                } catch (JSONException e) {
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+                } catch (XmlPullParserException e) {
                     e.printStackTrace();
                 }
             } );
