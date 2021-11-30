@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
             AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                     .setTitle("Getting forecast")
-                    .setMessage("We're calling people in " + cityName + "to look outside their windows and tell us what's the weather like over there.")
+                    .setMessage("We're calling people in " + cityName + " to look outside their windows and tell us what's the weather like over there.")
                     .setView(new ProgressBar(MainActivity.this))
                     .show();
 
@@ -170,13 +170,14 @@ public class MainActivity extends AppCompatActivity {
                         image = BitmapFactory.decodeFile(getFilesDir()+"/" + iconName + ".png");
                     }else {
                         URL imgUrl = new URL("https://openweathermap.org/img/w/" + iconName + ".png");
-                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        HttpURLConnection connection = (HttpURLConnection) imgUrl.openConnection();
                         connection.connect();
                         int responseCode = connection.getResponseCode();
                         if (responseCode == 200) {
 
+
                             image = BitmapFactory.decodeStream(connection.getInputStream());
-  //                          image.compress(Bitmap.CompressFormat.PNG, 100, openFileOutput(iconName+".png", Activity.MODE_PRIVATE));
+                            image.compress(Bitmap.CompressFormat.PNG, 100, openFileOutput( iconName+".png", Activity.MODE_PRIVATE));
                         }
                     }
 
@@ -219,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
                         FileOutputStream fOut = null;
                         try {
                             fOut = openFileOutput(iconName + ".png", Context.MODE_PRIVATE);
- //                           image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                            image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
                             fOut.flush();
                             fOut.close();
                         } catch (FileNotFoundException e) {
