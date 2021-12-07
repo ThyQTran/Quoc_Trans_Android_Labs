@@ -2,4 +2,6 @@
     <string name="app_name">Quoc Tran\'s Android Labs</string>
     <string name="hello_message">Type in the name of a city:</string>
     <string name="button_message">Get Forecast</string>
+    <string name="open" translatable="false" />
+    <string name="close" translatable="false" />
 </resources>
